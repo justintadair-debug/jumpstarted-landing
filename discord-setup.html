@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Discord Bot Setup — JUMPSTARTED</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #09090f;
+      --surface: #111118;
+      --surface2: #1a1a28;
+      --border: #1e1e2e;
+      --text: #e0e0f0;
+      --dim: #888899;
+      --muted: #3a3a52;
+      --accent: #7c6fff;
+      --green: #22c55e;
+      --yellow: #f59e0b;
+      --red: #ef4444;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    .container { max-width: 720px; margin: 0 auto; padding: 0 24px 80px; }
+
+    /* Header */
+    .page-header {
+      padding: 48px 0 40px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 48px;
+    }
+    .back-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: var(--dim); font-size: 0.85rem; text-decoration: none;
+      margin-bottom: 24px;
+      transition: color 0.15s;
+    }
+    .back-link:hover { color: var(--text); }
+    .badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(124,111,255,0.1);
+      border: 1px solid rgba(124,111,255,0.25);
+      border-radius: 20px; padding: 4px 12px;
+      font-size: 0.75rem; font-weight: 600; color: #a89fff;
+      margin-bottom: 16px;
+    }
+    .badge-dot { width: 6px; height: 6px; background: var(--green); border-radius: 50%; }
+    h1 { font-size: 2rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 12px; }
+    .page-meta { color: var(--dim); font-size: 0.9rem; }
+    .page-meta span { color: var(--green); font-weight: 600; }
+
+    /* Progress bar */
+    .progress-wrap { margin: 32px 0 0; }
+    .progress-label { font-size: 0.8rem; color: var(--dim); margin-bottom: 8px; }
+    .progress-bar {
+      height: 4px; background: var(--border); border-radius: 2px; overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%; background: var(--accent); border-radius: 2px;
+      width: 0%; transition: width 0.4s ease;
+    }
+
+    /* Steps */
+    .step {
+      margin-bottom: 40px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .step.complete { border-color: rgba(34,197,94,0.3); }
+    .step.active { border-color: rgba(124,111,255,0.4); }
+
+    .step-header {
+      display: flex; align-items: center; gap: 16px;
+      padding: 20px 24px;
+      background: var(--surface);
+      cursor: pointer;
+      user-select: none;
+    }
+    .step-num {
+      width: 36px; height: 36px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem; font-weight: 700; flex-shrink: 0;
+      background: var(--surface2); border: 2px solid var(--muted);
+      color: var(--dim); transition: all 0.2s;
+    }
+    .step.complete .step-num { background: rgba(34,197,94,0.15); border-color: var(--green); color: var(--green); }
+    .step.active .step-num { background: rgba(124,111,255,0.15); border-color: var(--accent); color: var(--accent); }
+
+    .step-title { flex: 1; }
+    .step-title h3 { font-size: 1rem; font-weight: 700; margin-bottom: 2px; }
+    .step-title p { font-size: 0.8rem; color: var(--dim); }
+    .step-check { color: var(--green); font-size: 1.1rem; display: none; }
+    .step.complete .step-check { display: block; }
+
+    .step-body {
+      padding: 0 24px;
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+    }
+    .step-body.open { max-height: 600px; padding: 0 24px 24px; }
+
+    .step-content { padding-top: 20px; border-top: 1px solid var(--border); }
+
+    /* Instruction items */
+    .instruction {
+      display: flex; gap: 14px; margin-bottom: 16px; align-items: flex-start;
+    }
+    .instruction-icon {
+      width: 28px; height: 28px; border-radius: 6px;
+      background: rgba(124,111,255,0.1); border: 1px solid rgba(124,111,255,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; flex-shrink: 0; margin-top: 2px;
+    }
+    .instruction-text { font-size: 0.9rem; color: var(--text); line-height: 1.6; }
+    .instruction-text strong { color: #fff; }
+    .instruction-text .click { 
+      display: inline-block;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 4px; padding: 1px 7px;
+      font-size: 0.8rem; font-family: monospace; color: var(--accent);
+    }
+    .instruction-text .path {
+      font-size: 0.8rem; font-family: monospace;
+      color: var(--dim); background: var(--surface2);
+      padding: 1px 6px; border-radius: 3px;
+    }
+
+    /* Screenshot placeholder */
+    .screenshot {
+      background: var(--surface2); border: 1px dashed var(--muted);
+      border-radius: 8px; padding: 16px 20px; margin: 14px 0;
+      font-size: 0.8rem; color: var(--dim);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .screenshot::before { content: "🖼️"; font-size: 1.1rem; }
+
+    /* Code/token display */
+    .token-display {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 14px 16px; margin: 12px 0;
+      font-family: monospace; font-size: 0.85rem; color: var(--green);
+      letter-spacing: 0.5px;
+    }
+
+    /* Warning / tip */
+    .tip {
+      background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2);
+      border-radius: 8px; padding: 12px 16px; margin: 12px 0;
+      font-size: 0.85rem; color: #fcd34d;
+      display: flex; gap: 10px; align-items: flex-start;
+    }
+    .tip-icon { flex-shrink: 0; font-size: 1rem; }
+
+    .success-note {
+      background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2);
+      border-radius: 8px; padding: 12px 16px; margin: 12px 0;
+      font-size: 0.85rem; color: #86efac;
+      display: flex; gap: 10px; align-items: flex-start;
+    }
+
+    /* Mark complete button */
+    .mark-done {
+      display: inline-flex; align-items: center; gap: 8px;
+      margin-top: 16px; padding: 10px 18px;
+      background: rgba(124,111,255,0.1); border: 1px solid rgba(124,111,255,0.3);
+      border-radius: 8px; color: var(--accent); font-size: 0.85rem;
+      font-weight: 600; cursor: pointer; transition: all 0.2s;
+    }
+    .mark-done:hover { background: rgba(124,111,255,0.2); }
+
+    /* Common mistakes */
+    .mistakes { margin: 48px 0; }
+    .mistakes h2 { font-size: 1.3rem; font-weight: 800; margin-bottom: 6px; }
+    .mistakes-sub { color: var(--dim); font-size: 0.9rem; margin-bottom: 24px; }
+    .mistake-item {
+      display: flex; gap: 14px; margin-bottom: 16px;
+      padding: 16px; background: var(--surface);
+      border: 1px solid var(--border); border-radius: 10px;
+    }
+    .mistake-icon { font-size: 1.2rem; flex-shrink: 0; }
+    .mistake-text h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; color: #fca5a5; }
+    .mistake-text p { font-size: 0.85rem; color: var(--dim); }
+
+    /* Final test */
+    .final-test {
+      background: linear-gradient(135deg, rgba(124,111,255,0.08), rgba(34,197,94,0.05));
+      border: 1px solid rgba(124,111,255,0.2);
+      border-radius: 12px; padding: 28px; margin: 48px 0;
+    }
+    .final-test h2 { font-size: 1.2rem; font-weight: 800; margin-bottom: 8px; }
+    .final-test p { color: var(--dim); font-size: 0.9rem; margin-bottom: 16px; }
+    .test-command {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 14px 16px;
+      font-family: monospace; font-size: 0.9rem; color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    footer {
+      text-align: center; padding: 32px 0;
+      border-top: 1px solid var(--border);
+      color: var(--dim); font-size: 0.8rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="page-header">
+    <a href="index.html" class="back-link">← Back to JUMPSTARTED</a>
+    <div class="badge"><div class="badge-dot"></div> Setup Guide</div>
+    <h1>Discord Bot Setup</h1>
+    <p class="page-meta">
+      Takes about <span>8 minutes</span>. You only do this once.
+    </p>
+    <div class="progress-wrap">
+      <div class="progress-label">Your progress</div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+    </div>
+  </div>
+
+  <!-- Steps -->
+
+  <!-- Step 1 -->
+  <div class="step active" id="step-1">
+    <div class="step-header" onclick="toggleStep(1)">
+      <div class="step-num">1</div>
+      <div class="step-title">
+        <h3>Create a Discord server</h3>
+        <p>Your private server — just for you and your AI team</p>
+      </div>
+      <div class="step-check">✓</div>
+    </div>
+    <div class="step-body open" id="body-1">
+      <div class="step-content">
+        <div class="instruction">
+          <div class="instruction-icon">👈</div>
+          <div class="instruction-text">
+            In the left sidebar of Discord, scroll all the way to the bottom. Click the <span class="click">+</span> button (the big green circle with a plus).
+          </div>
+        </div>
+        <div class="screenshot">Left sidebar → green + circle at the very bottom → "Create My Own" → "For me and my friends"</div>
+        <div class="instruction">
+          <div class="instruction-icon">✏️</div>
+          <div class="instruction-text">
+            Select <strong>"Create My Own"</strong>, then <strong>"For me and my friends"</strong>. Name it anything — <span class="path">JUMPSTARTED</span> or your own name works fine.
+          </div>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">💡</div>
+          <div>You don't need to invite anyone. This server is just for you and your agents. It can be completely private.</div>
+        </div>
+        <button class="mark-done" onclick="markDone(1)">✓ Done — I have a server</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 2 -->
+  <div class="step" id="step-2">
+    <div class="step-header" onclick="toggleStep(2)">
+      <div class="step-num">2</div>
+      <div class="step-title">
+        <h3>Create a Discord application</h3>
+        <p>This is where your bot lives</p>
+      </div>
+      <div class="step-check">✓</div>
+    </div>
+    <div class="step-body" id="body-2">
+      <div class="step-content">
+        <div class="instruction">
+          <div class="instruction-icon">🌐</div>
+          <div class="instruction-text">
+            Open a new browser tab. Go to: <strong>discord.com/developers/applications</strong>
+          </div>
+        </div>
+        <div class="instruction">
+          <div class="instruction-icon">➕</div>
+          <div class="instruction-text">
+            Click <span class="click">New Application</span> in the top-right corner.
+          </div>
+        </div>
+        <div class="screenshot">Top-right corner → blue "New Application" button → name it "JUMPSTARTED" → Agree → Create</div>
+        <div class="instruction">
+          <div class="instruction-icon">📝</div>
+          <div class="instruction-text">
+            Name it <span class="path">JUMPSTARTED</span>. Check the box agreeing to the Terms of Service. Click <span class="click">Create</span>.
+          </div>
+        </div>
+        <button class="mark-done" onclick="markDone(2)">✓ Done — Application created</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 3 -->
+  <div class="step" id="step-3">
+    <div class="step-header" onclick="toggleStep(3)">
+      <div class="step-num">3</div>
+      <div class="step-title">
+        <h3>Create the bot and copy your token</h3>
+        <p>The token is your bot's password — keep it private</p>
+      </div>
+      <div class="step-check">✓</div>
+    </div>
+    <div class="step-body" id="body-3">
+      <div class="step-content">
+        <div class="instruction">
+          <div class="instruction-icon">🤖</div>
+          <div class="instruction-text">
+            In the left sidebar of the Developer Portal, click <strong>Bot</strong>.
+          </div>
+        </div>
+        <div class="screenshot">Left sidebar → "Bot" section</div>
+        <div class="instruction">
+          <div class="instruction-icon">🔑</div>
+          <div class="instruction-text">
+            Under the <strong>TOKEN</strong> section, click <span class="click">Reset Token</span>. Confirm when it asks. Then click <span class="click">Copy</span>.
+          </div>
+        </div>
+        <div class="token-display">MTk4NjIyNDgzNDI2OTkwNTc2.GmFh3... ← yours will look like this</div>
+        <div class="tip">
+          <div class="tip-icon">⚠️</div>
+          <div><strong>Save this token right now.</strong> You can only see it once. Paste it somewhere safe before continuing. JUMPSTARTED will ask for it in the installer.</div>
+        </div>
+        <div class="instruction">
+          <div class="instruction-icon">🔓</div>
+          <div class="instruction-text">
+            Scroll down to <strong>Privileged Gateway Intents</strong>. Turn on <strong>Message Content Intent</strong>. Click <span class="click">Save Changes</span>.
+          </div>
+        </div>
+        <div class="screenshot">Bot page → "Privileged Gateway Intents" → "Message Content Intent" toggle → Save Changes (green button)</div>
+        <button class="mark-done" onclick="markDone(3)">✓ Done — Token copied</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 4 -->
+  <div class="step" id="step-4">
+    <div class="step-header" onclick="toggleStep(4)">
+      <div class="step-num">4</div>
+      <div class="step-title">
+        <h3>Invite the bot to your server</h3>
+        <p>Give the bot permission to read and send messages</p>
+      </div>
+      <div class="step-check">✓</div>
+    </div>
+    <div class="step-body" id="body-4">
+      <div class="step-content">
+        <div class="instruction">
+          <div class="instruction-icon">🔗</div>
+          <div class="instruction-text">
+            In the left sidebar, click <strong>OAuth2</strong>, then <strong>URL Generator</strong>.
+          </div>
+        </div>
+        <div class="screenshot">Left sidebar → OAuth2 → URL Generator</div>
+        <div class="instruction">
+          <div class="instruction-icon">☑️</div>
+          <div class="instruction-text">
+            Under <strong>Scopes</strong>, check: <span class="click">bot</span><br/>
+            Under <strong>Bot Permissions</strong>, check:
+            <span class="click">Send Messages</span>,
+            <span class="click">Read Message History</span>,
+            <span class="click">View Channels</span>
+          </div>
+        </div>
+        <div class="screenshot">Scopes: bot ✓ → Bot Permissions: Send Messages ✓, Read Message History ✓, View Channels ✓</div>
+        <div class="instruction">
+          <div class="instruction-icon">📋</div>
+          <div class="instruction-text">
+            Scroll to the bottom. Click <span class="click">Copy</span> next to the generated URL.
+          </div>
+        </div>
+        <div class="instruction">
+          <div class="instruction-icon">🌐</div>
+          <div class="instruction-text">
+            Paste that URL into a new browser tab. Select your JUMPSTARTED server from the dropdown. Click <span class="click">Authorize</span>. Complete the CAPTCHA.
+          </div>
+        </div>
+        <div class="success-note">
+          <div>🟢</div>
+          <div>Your bot should now appear in your server's member list (probably offline — that's fine, it goes online when JUMPSTARTED runs).</div>
+        </div>
+        <button class="mark-done" onclick="markDone(4)">✓ Done — Bot is in my server</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 5 -->
+  <div class="step" id="step-5">
+    <div class="step-header" onclick="toggleStep(5)">
+      <div class="step-num">5</div>
+      <div class="step-title">
+        <h3>Turn on Developer Mode in Discord</h3>
+        <p>Required to copy your channel ID in the next step</p>
+      </div>
+      <div class="step-check">✓</div>
+    </div>
+    <div class="step-body" id="body-5">
+      <div class="step-content">
+        <div class="instruction">
+          <div class="instruction-icon">⚙️</div>
+          <div class="instruction-text">
+            In Discord, click the <strong>gear icon ⚙️</strong> next to your username at the bottom-left of the screen. This opens User Settings.
+          </div>
+        </div>
+        <div class="screenshot">Bottom-left of Discord → gear icon ⚙️ next to your username → User Settings</div>
+        <div class="instruction">
+          <div class="instruction-icon">🔧</div>
+          <div class="instruction-text">
+            In the left sidebar, scroll down to <strong>Advanced</strong>. Toggle <strong>Developer Mode</strong> to ON.
+          </div>
+        </div>
+        <div class="screenshot">User Settings → "Advanced" (left sidebar, near the bottom) → "Developer Mode" toggle → ON</div>
+        <div class="tip">
+          <div class="tip-icon">💡</div>
+          <div>This is the #1 step people skip. Without Developer Mode on, you cannot right-click to copy the channel ID in the next step.</div>
+        </div>
+        <button class="mark-done" onclick="markDone(5)">✓ Done — Developer Mode is on</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 6 -->
+  <div class="step" id="step-6">
+    <div class="step-header" onclick="toggleStep(6)">
+      <div class="step-num">6</div>
+      <div class="step-title">
+        <h3>Copy your channel ID</h3>
+        <p>The ID that tells your AI team where to talk to you</p>
+      </div>
+      <div class="step-check">✓</div>
+    </div>
+    <div class="step-body" id="body-6">
+      <div class="step-content">
+        <div class="instruction">
+          <div class="instruction-icon">📢</div>
+          <div class="instruction-text">
+            In your JUMPSTARTED server, find the channel you want to use — typically <span class="path">#general</span>. <strong>Right-click on the channel name</strong> in the left sidebar.
+          </div>
+        </div>
+        <div class="screenshot">Left sidebar → right-click "#general" → scroll to bottom of context menu → "Copy Channel ID"</div>
+        <div class="instruction">
+          <div class="instruction-icon">📋</div>
+          <div class="instruction-text">
+            At the bottom of the right-click menu, click <span class="click">Copy Channel ID</span>. It will be a long number like <span class="path">1234567890123456789</span>.
+          </div>
+        </div>
+        <div class="token-display">1234567890123456789 ← yours will look like this</div>
+        <div class="tip">
+          <div class="tip-icon">⚠️</div>
+          <div>If you don't see "Copy Channel ID" in the right-click menu, go back to Step 5 — Developer Mode is not on.</div>
+        </div>
+        <button class="mark-done" onclick="markDone(6)">✓ Done — Channel ID copied</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Common Mistakes -->
+  <div class="mistakes">
+    <h2>Common mistakes</h2>
+    <p class="mistakes-sub">These are the four things that trip people up most.</p>
+
+    <div class="mistake-item">
+      <div class="mistake-icon">⚠️</div>
+      <div class="mistake-text">
+        <h4>Forgot to enable Developer Mode</h4>
+        <p>Symptom: "Copy Channel ID" doesn't appear when you right-click. Fix: go back to Step 5, turn on Developer Mode, then right-click the channel again.</p>
+      </div>
+    </div>
+
+    <div class="mistake-item">
+      <div class="mistake-icon">⚠️</div>
+      <div class="mistake-text">
+        <h4>Forgot to enable Message Content Intent</h4>
+        <p>Symptom: bot is online but doesn't respond to messages. Fix: go to discord.com/developers/applications → your app → Bot → turn on "Message Content Intent" → Save.</p>
+      </div>
+    </div>
+
+    <div class="mistake-item">
+      <div class="mistake-icon">⚠️</div>
+      <div class="mistake-text">
+        <h4>Token saved wrong (extra spaces or cut short)</h4>
+        <p>Symptom: installer says "Invalid bot token." Fix: go back to the Developer Portal → Bot → Reset Token → copy again. The token is long — make sure you got the whole thing.</p>
+      </div>
+    </div>
+
+    <div class="mistake-item">
+      <div class="mistake-icon">⚠️</div>
+      <div class="mistake-text">
+        <h4>Bot not added to the right server</h4>
+        <p>Symptom: bot appears in the member list of the wrong server, or not at all. Fix: go to OAuth2 → URL Generator → generate a new URL → paste it in your browser and select the correct server.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Final Test -->
+  <div class="final-test">
+    <h2>✅ Test your bot</h2>
+    <p>Once JUMPSTARTED is installed and running, your bot will come online and say hello. You can also test it manually:</p>
+    <p>Type anything in your Discord channel to get a response. Try:</p>
+    <div class="test-command">Neo, are you there?</div>
+    <p style="color:var(--dim);font-size:0.85rem;">If Neo responds, everything is working. If nothing happens after 30 seconds, check that JUMPSTARTED is running on your Mac (run <span class="path">jumpstarted start</span> in Terminal).</p>
+  </div>
+
+  <footer>
+    JUMPSTARTED — <a href="index.html">Back to main page</a> &nbsp;·&nbsp; Stuck? Email <a href="mailto:justin@jumpstarted.ai">justin@jumpstarted.ai</a>
+  </footer>
+
+</div>
+
+<script>
+  const totalSteps = 6;
+  const completed = new Set();
+
+  function updateProgress() {
+    const pct = (completed.size / totalSteps) * 100;
+    document.getElementById('progress-fill').style.width = pct + '%';
+  }
+
+  function markDone(n) {
+    completed.add(n);
+    const stepEl = document.getElementById('step-' + n);
+    stepEl.classList.add('complete');
+    stepEl.classList.remove('active');
+    // Auto-open next step
+    const next = n + 1;
+    if (next <= totalSteps) {
+      const nextEl = document.getElementById('step-' + next);
+      nextEl.classList.add('active');
+      document.getElementById('body-' + next).classList.add('open');
+      nextEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    updateProgress();
+  }
+
+  function toggleStep(n) {
+    const body = document.getElementById('body-' + n);
+    body.classList.toggle('open');
+  }
+</script>
+</body>
+</html>
