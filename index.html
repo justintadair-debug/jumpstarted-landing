@@ -622,8 +622,20 @@
                 <input type="email" placeholder="Enter your email" required>
                 <button type="submit">Get Early Access</button>
             </form>
-            <div class="form-success" id="hero-success">🎉 You're on the list! We'll be in touch soon.</div>
+            <div class="form-success" id="hero-success" style="display: none;">🎉 You're on the list! We'll be in touch soon.</div>
             <p class="form-note"><span>First 100 founding members</span> get 50% off for life</p>
+        </div>
+    </section>
+
+    <!-- The Story (testimonial) -->
+    <section class="story">
+        <div class="container">
+            <div class="story-content">
+                <blockquote>
+                    I always had big ideas. The problem was I needed other people to make them real. JUMPSTARTED changed that. Now I build anything. By myself.
+                </blockquote>
+                <p class="story-author">— <span>Justin</span>, Founder</p>
+            </div>
         </div>
     </section>
 
@@ -690,6 +702,7 @@
                     <div class="step-content">
                         <h3>Install with one command</h3>
                         <p>Copy, paste, done. Everything you need downloads automatically.</p>
+                        <code style="display: block; background: #1a1a2e; padding: 12px 16px; border-radius: 8px; margin-top: 12px; font-size: 0.85rem; overflow-x: auto; color: #f59e0b;">curl -fsSL https://raw.githubusercontent.com/justintadair-debug/operator/main/bootstrap.sh | bash</code>
                     </div>
                 </div>
                 <div class="step">
@@ -710,23 +723,11 @@
         </div>
     </section>
 
-    <!-- The Story -->
-    <section class="story">
-        <div class="container">
-            <div class="story-content">
-                <blockquote>
-                    I always had big ideas. The problem was I needed other people to make them real. JUMPSTARTED changed that. Now I build anything. By myself.
-                </blockquote>
-                <p class="story-author">— <span>Justin</span>, Founder</p>
-            </div>
-        </div>
-    </section>
-
     <!-- Pricing -->
     <section class="pricing">
         <div class="container">
             <h2 class="section-title">Simple Pricing</h2>
-            <p class="section-subtitle">Pay once, run forever. No per-message fees. No API costs.</p>
+            <p class="section-subtitle">Simple monthly plans. No per-message fees. No API costs.</p>
             
             <div class="pricing-grid">
                 <div class="price-card">
@@ -742,7 +743,7 @@
                 </div>
                 
                 <div class="price-card popular">
-                    <h3 class="price-name">Operator</h3>
+                    <h3 class="price-name">Pro</h3>
                     <div class="price-amount">$99<span>/mo</span></div>
                     <ul class="price-features">
                         <li>All 4 AI agents</li>
@@ -758,7 +759,7 @@
                     <h3 class="price-name">Studio</h3>
                     <div class="price-amount">$199<span>/mo</span></div>
                     <ul class="price-features">
-                        <li>Everything in Operator</li>
+                        <li>Everything in Pro</li>
                         <li>Unlimited custom agents</li>
                         <li>API access</li>
                         <li>White-label option</li>
@@ -784,7 +785,7 @@
                 <input type="email" placeholder="Enter your email" required>
                 <button type="submit">Join the Waitlist</button>
             </form>
-            <div class="form-success" id="final-success">🎉 You're on the list! We'll be in touch soon.</div>
+            <div class="form-success" id="final-success" style="display: none;">🎉 You're on the list! We'll be in touch soon.</div>
         </div>
     </section>
 
