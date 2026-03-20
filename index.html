@@ -864,7 +864,11 @@
         }
         animate();
 
-        // Form Handling
+        // Form Handling — uses Formspree (free tier)
+        // Justin: Replace YOUR_FORM_ID with your actual Formspree form ID
+        // Get one at https://formspree.io (free, just enter your email)
+        const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xgegkvbw'; // placeholder - needs real ID
+        
         async function handleSubmit(e, formId, successId) {
             e.preventDefault();
             const form = document.getElementById(formId);
@@ -872,20 +876,29 @@
             const email = form.querySelector('input').value;
             
             try {
-                const response = await fetch('/api/waitlist', {
+                const response = await fetch(FORMSPREE_ENDPOINT, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, source: 'jumpstarted' })
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        email: email,
+                        source: 'jumpstarted.ai waitlist',
+                        _subject: 'New JUMPSTARTED Waitlist Signup'
+                    })
                 });
                 
                 if (response.ok) {
                     form.style.display = 'none';
                     success.classList.add('show');
+                } else {
+                    // Fallback: open mailto
+                    window.location.href = `mailto:justint.adair@gmail.com?subject=JUMPSTARTED%20Waitlist&body=Please%20add%20me%20to%20the%20waitlist.%20Email:%20${encodeURIComponent(email)}`;
                 }
             } catch (err) {
-                // Still show success for UX (backend might be down)
-                form.style.display = 'none';
-                success.classList.add('show');
+                // Fallback: open mailto
+                window.location.href = `mailto:justint.adair@gmail.com?subject=JUMPSTARTED%20Waitlist&body=Please%20add%20me%20to%20the%20waitlist.%20Email:%20${encodeURIComponent(email)}`;
             }
         }
 
