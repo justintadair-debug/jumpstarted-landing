@@ -618,8 +618,10 @@
             <h1>You had the ideas.<br>Now you have the team.</h1>
             <p>JUMPSTARTED gives you 4 AI agents running 24/7 on your own computer. Build anything.</p>
             
-            <form class="email-form" id="hero-form">
-                <input type="email" placeholder="Enter your email" required>
+            <form class="email-form" id="hero-form" action="https://formspree.io/f/mdapnndz" method="POST">
+                <input type="email" name="email" placeholder="Enter your email" required>
+                <input type="hidden" name="_subject" value="New JUMPSTARTED Waitlist Signup">
+                <input type="hidden" name="_next" value="https://justintadair-debug.github.io/jumpstarted-landing/?thanks=1">
                 <button type="submit">Get Early Access</button>
             </form>
             <div class="form-success" id="hero-success" style="display: none;">🎉 You're on the list! We'll be in touch soon.</div>
@@ -788,8 +790,10 @@
             <h2>Ready to Build?</h2>
             <p>Join the waitlist. Be first in line when we launch.</p>
             
-            <form class="email-form" id="final-form">
-                <input type="email" placeholder="Enter your email" required>
+            <form class="email-form" id="final-form" action="https://formspree.io/f/mdapnndz" method="POST">
+                <input type="email" name="email" placeholder="Enter your email" required>
+                <input type="hidden" name="_subject" value="New JUMPSTARTED Waitlist Signup">
+                <input type="hidden" name="_next" value="https://justintadair-debug.github.io/jumpstarted-landing/?thanks=1">
                 <button type="submit">Join the Waitlist</button>
             </form>
             <div class="form-success" id="final-success" style="display: none;">🎉 You're on the list! We'll be in touch soon.</div>
@@ -907,6 +911,12 @@
 
         document.getElementById('hero-form').addEventListener('submit', (e) => handleSubmit(e, 'hero-form', 'hero-success'));
         document.getElementById('final-form').addEventListener('submit', (e) => handleSubmit(e, 'final-form', 'final-success'));
+
+        // Show success message if redirected back after Formspree submission
+        if (window.location.search.includes('thanks=1')) {
+            document.getElementById('hero-form').style.display = 'none';
+            document.getElementById('hero-success').style.display = 'block';
+        }
 
         function scrollToForm() {
             document.querySelector('.hero').scrollIntoView({ behavior: 'smooth' });
